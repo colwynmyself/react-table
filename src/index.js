@@ -591,8 +591,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                     expanded: newExpanded,
                   },
                   () => {
-                    onExpandedChange &&
-                      onExpandedChange(newExpanded, cellInfo.nestingPath, e)
+                    if (onExpandedChange) onExpandedChange(newExpanded, cellInfo.nestingPath, e)
                   }
                 )
               }
@@ -694,6 +693,15 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
               }
 
               // Return the cell
+              // If there are multiple onClick events, make sure they don't override eachother. This should maybe be expanded to handle all function attributes
+              const onClickObject = {}
+
+              if (interactionProps && interactionProps.onClick && tdProps.rest && tdProps.rest.onClick) {
+                onClickObject.onClick = event => {
+                  tdProps.rest.onClick(event, interactionProps.onClick)
+                }
+              }
+
               return (
                 <TdComponent
                   key={i2 + '-' + column.id}
@@ -712,6 +720,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
                   {...interactionProps}
                   {...tdProps.rest}
                   {...columnProps.rest}
+                  {...onClickObject}
                 >
                   {resolvedCell}
                 </TdComponent>
