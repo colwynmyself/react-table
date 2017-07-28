@@ -697,7 +697,7 @@ export default class ReactTable extends Methods(Lifecycle(Component)) {
               const onClickObject = {}
 
               if (interactionProps && interactionProps.onClick && tdProps.rest && tdProps.rest.onClick) {
-                onClickObject.onClick = event => {
+                onClickObject.onClick = (proxy, event) => {
                   tdProps.rest.onClick(event, interactionProps.onClick)
                 }
               }
